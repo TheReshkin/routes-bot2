@@ -3,14 +3,14 @@ from datetime import datetime, date, time
 
 
 class User:
-    routes = []
-    # станции, которые искал пользователь
+    routes = []  # будет в базе данных
+    # станции, которые искал пользователь (добавить в базу данных)
     station_history = []
 
     # на буд. добавь историю станций
     def __init__(self, chat_id, user_name):
         self.chat_id = chat_id
-        self.token = self.gen_token(chat_id)
+        self.token = self.gen_token(chat_id)  # будет в базе данных
         self.user_name = user_name
 
     @staticmethod

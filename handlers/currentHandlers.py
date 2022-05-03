@@ -39,7 +39,18 @@ def start(update, context):
 def button(update, context):
     # CallbackQueries need to be answered, even if no notification to the user is needed
     update.callback_query.answer()
-    update.callback_query.edit_message_text(text=f"Выбранная кнопка: {update.callback_query.data}")
+    update.callback_query.edit_message_text(text=f"Выбранный транспорт: {update.callback_query.data}")
+    print(update.callback_query.data)
+    if update.callback_query.data == 'Avia':
+        print('выбран самолет')
+        return 1
+    elif update.callback_query.data == 'Train':
+        return 1
+    else:
+        update.message.reply_text(
+            text="Такого транспорта я не знаю \nВыберите транспорт в сообщении",
+        )
+        search(update, context)
 
 
 def menu(update, context):
@@ -61,6 +72,10 @@ def menu(update, context):
 
 
 def back(update, context):
+    update.message.reply_text(
+        text="Возвращаюсь назад",
+    )
+
     try:
         update.message.reply_text(
             reply_markup=ReplyKeyboardRemove()
@@ -70,22 +85,22 @@ def back(update, context):
 
 
 def one_way(update, context):
-    transport = update.message.text
-    if transport == menu_buttons.train:
+    print("one_way " + update.callback_query.data)
+    if update.callback_query.data == 'Train':
+        print("сработало условие вопроса")
         update.message.reply_text(
-            text="Откуда едем?",
-            reply_markup=ReplyKeyboardRemove()
+            text="Откуда едем?"
         )
-    elif transport == menu_buttons.plane:
+    elif update.callback_query.data == 'Avia':
+        print("сработало условие вопроса")
         update.message.reply_text(
-            text="Откуда летим?",
-            reply_markup=ReplyKeyboardRemove()
+            text="Откуда летим?"
         )
     else:
         update.message.reply_text(
             text="Такого транспорта я не знаю \nВыберите транспорт на клавиатуре",
         )
-        one_way()
+        one_way(update, context)
     first_station = update.message.text
     print("Место отправления", first_station)
     return 2
@@ -102,36 +117,14 @@ def another_way(update, context):
 
 
 def search(update, context):
-    reply_markup = ReplyKeyboardMarkup(
-        keyboard=[
-            [
-                KeyboardButton(text=menu_buttons.plane),
-                KeyboardButton(text=menu_buttons.train)
-            ],
-            [
-                KeyboardButton(text=menu_buttons.back)
-            ],
+    keyboard = [
+        [
+            InlineKeyboardButton("Самолет", callback_data='Avia'),
+            InlineKeyboardButton("Поезд", callback_data='Train'),
         ],
-        resize_keyboard=True,
-        one_time_keyboard=True,
-    )
-    update.message.reply_text(
-        text="На поезде или самолетом?",
-        reply_markup=reply_markup
-    )
-    user_text = update.message
-    print(user_text)
-    if user_text == menu_buttons.plane:
-        return 1
-    elif user_text == menu_buttons.train:
-        return 1
-    elif user_text == menu_buttons.back:
-        return 3
-    else:
-        update.message.reply_text(
-            text="Такого транспорта я не знаю \nВыберите транспорт на клавиатуре",
-            reply_markup=reply_markup
-        )
+    ]
+    update.message.reply_text("Какой транспорт?", reply_markup=InlineKeyboardMarkup(keyboard))
+    return 4
 
 
 conv_handler = ConversationHandler(
@@ -146,5 +139,6 @@ conv_handler = ConversationHandler(
     },
 
     # Точка прерывания диалога. В данном случае — команда /stop.
-    fallbacks=[MessageHandler(Filters.entity(menu_buttons.back), back)]
+    # fallbacks=[MessageHandler(Filters.regex('назад'), back)]
+    fallbacks=[CommandHandler("back", back)]
 )

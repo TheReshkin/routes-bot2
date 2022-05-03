@@ -23,8 +23,9 @@ def main():
     # /text_handler = MessageHandler(Filters.text, currentHandlers.echo)
     # сценарий поиска
     dp.add_handler(currentHandlers.conv_handler)
-
+    # Filters.regex('^(Age|Favourite colour|Number of siblings)$'
     dp.add_handler(CommandHandler("start", currentHandlers.start))
+    dp.add_handler(CommandHandler("back", currentHandlers.back))
     # инлайн запросы вне чата
     dp.add_handler(inline.in_query.inline_caps_handler)
 
