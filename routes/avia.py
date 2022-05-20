@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 
@@ -46,21 +48,22 @@ def edit_answer_query(num):
     return answer
 
 
-def edit_answer():
-    f_station = "Москва1"
-    s_station = "Санкт-Петербург"
-    t_num = "1"
-    # departure
-    dep_date = "01.01.2022"
-    dep_time = "09:00"
-    # arrival
-    arr_date = "01.01.2022"
-    arr_time = "14:00"
-    travel_time = "7:00"
-    company = "Победа"
-    link = "aviasales.ru"
-    num_seats = "10"
-    min_price = "2400"
+def edit_answer(s_station, f_station, dep_time, dep_date, arr_time, arr_date, travel_time, min_price, link,
+                num_seats="не доступно", company="не отображено"):
+    # f_station = "Москва1"
+    # s_station = "Санкт-Петербург"
+    # t_num = "1"
+    # # departure
+    # dep_date = "01.01.2022"
+    # dep_time = "09:00"
+    # # arrival
+    # arr_date = "01.01.2022"
+    # arr_time = "14:00"
+    # travel_time = "7:00"
+    # company = "Победа"
+    # link = "aviasales.ru"
+    # num_seats = "10"
+    # min_price = "2400"
 
     answer = f"""🛫 {1}
     {f_station}➡️{s_station}
@@ -74,16 +77,25 @@ def edit_answer():
     return answer
 
 
-def get_route(dep_code, arrival_code, dep_date, service_class, adult=1, child=0, infant=0, count=5):
-    import requests
-
-    url = "https://best-routes.herokuapp.com//routes/avia?departureCode=MOW&arrivalCode=LED&departureDate=2022-04-27&adult=1&child=0&infant=0&serviceClass=Y&count=-1"
+def get_route(dep_code, arrival_code, dep_date, service_class, adult=1, child=0, infant=0, count=1):
+    # отправления/прибытия указывать из городов
+    # исправить добавление параметров
+    url = "https://best-routes.herokuapp.com//routes/avia?departureCode=" + dep_code + "&arrivalCode=" + arrival_code + "&departureDate=" \
+          + dep_date + "&adult=" + str(adult) + "&child=" + str(child) + "&infant=" + \
+          str(infant) + "&serviceClass=" + service_class + "&count=" + str(count)
 
     payload = {}
     headers = {
-        'Token': '1:HzvFemBUQt56BVuGwJKAeJMktshMsNcCahy7fjVT97Oam7hT8LeNrTci8K0tzt1T6J0kyCuPVGZVqLjPqudQ4a78tnfOK3e16klB'
+        'Token': '2:ulPOKyX28xh8ZsfQ6eFRnvNyPBqmAPH0KhyxAZO3e0lC1y3BLNaMxNM8V4b7DCMbAVv48kPhdkPLOOIdeLTB5VlpAQuABf82gOrK'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
-
-    print(response.text)
+    res_json = response.json()
+    print(res_json)
+    # print(res_json.get('result')[0].get('arrival'))
+    for route in res_json.get('result'):
+        return edit_answer(route.get('arrival'), route.get('departure'), route.get('arrivalDateTime'),
+                           route.get('arrivalDateTime'), route.get('departureDateTime'), route.get('departureDateTime'),
+                           route.get('duration'),
+                           route.get('segments')[0].get('minPrice'), route.get('url'))
+    return str(json.loads(response.text))

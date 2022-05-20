@@ -5,6 +5,7 @@ from telegram.ext import CommandHandler, MessageHandler, Filters
 
 import menu_buttons
 import registration.sign
+import routes.avia
 
 
 # Определяем функцию-обработчик сообщений.
@@ -149,5 +150,7 @@ def auth(update, context):
     password = "resh1"
     registration.sign.log_in(mail, password, update.message.from_user.id)
 
+
 def search_raw(update, context):
-    pass
+    print("_search_raw")
+    update.message.reply_text(text=routes.avia.get_route("MOW", "LED", "2022-05-20", "Y"))
