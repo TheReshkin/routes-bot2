@@ -1,6 +1,6 @@
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
-from routes import railway, avia
+from routes import  avia
 from telegram import InlineKeyboardMarkup
 from telegram import InlineKeyboardButton
 from telegram import InlineQueryResult
@@ -15,14 +15,7 @@ def inline_caps(update, context):
 
     results.append(
         InlineQueryResultArticle(
-            id="avia",
-            title="Поиск ЖД билетов",
-            input_message_content=InputTextMessageContent(message_text=railway.railway_search(query)),
-        )
-    )
-    results.append(
-        InlineQueryResultArticle(
-            id="railway",
+            id="Avia",
             title="Поиск авиа билетов",
             input_message_content=InputTextMessageContent(avia.avia_search(query))
         )

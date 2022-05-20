@@ -1,6 +1,9 @@
 import requests
 
 
+# установить библиотеку для поиска аэропортов по ИАТО
+# import airportsdata
+
 def avia_search(f_station, s_station, date):
     print("Avia")
     return edit_answer()
@@ -69,3 +72,18 @@ def edit_answer():
     Ссылка: {link}"""
 
     return answer
+
+
+def get_route(dep_code, arrival_code, dep_date, service_class, adult=1, child=0, infant=0, count=5):
+    import requests
+
+    url = "https://best-routes.herokuapp.com//routes/avia?departureCode=MOW&arrivalCode=LED&departureDate=2022-04-27&adult=1&child=0&infant=0&serviceClass=Y&count=-1"
+
+    payload = {}
+    headers = {
+        'Token': '1:HzvFemBUQt56BVuGwJKAeJMktshMsNcCahy7fjVT97Oam7hT8LeNrTci8K0tzt1T6J0kyCuPVGZVqLjPqudQ4a78tnfOK3e16klB'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    print(response.text)
