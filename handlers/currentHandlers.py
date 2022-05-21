@@ -2,6 +2,8 @@ from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, 
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, CallbackQueryHandler
 from telegram.ext import CommandHandler, MessageHandler, Filters
+#from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+import telegram_bot_calendar
 
 import menu_buttons
 import registration.sign
@@ -92,33 +94,32 @@ def back(update, context):
         print("_ошибка типов, клавиатуры не было")
 
 
-def one_way(update, context):
+async def one_way(update, context):
     print("_one_way")
     update.message.reply_text(
-        text="Откуда летим?"
+        text="Куда летим?"
     )
     first_station = update.message.text
-    print("Место отправления", first_station)
+    print("_Место отправления", first_station)
     return 2
 
 
 def another_way(update, context):
     update.message.reply_text(
-        text="Куда летим?"
+        text="Когда летим?"
     )
+    calendar_d = telegram_bot_calendar.create_calendar()
+    update.message.reply_text("Please select a date: ",
+                              reply_markup=calendar_d)
+
     second_station = update.message.text
-    print("Место назначения", second_station)
+    print("_Место назначения", second_station)
 
     return ConversationHandler.END
 
 
 def search(update, context):
-    keyboard = [
-        [
-            InlineKeyboardButton("Самолет", callback_data='Avia'),
-        ],
-    ]
-    update.message.reply_text("Какой транспорт?", reply_markup=InlineKeyboardMarkup(keyboard))
+    update.message.reply_text("Откуда полетим?")
     return 1
 
 
@@ -153,4 +154,4 @@ def auth(update, context):
 
 def search_raw(update, context):
     print("_search_raw")
-    update.message.reply_text(text=routes.avia.get_route("MOW", "LED", "2022-05-20", "Y"))
+    update.message.reply_text(text=routes.avia.get_route("MOW", "LED", "2022-05-25", "Y"))

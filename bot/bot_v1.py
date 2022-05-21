@@ -30,6 +30,7 @@ def main():
     dp.add_handler(CommandHandler("reg", currentHandlers.reg))
     dp.add_handler(CommandHandler("auth", currentHandlers.auth))
     dp.add_handler(CommandHandler("search_raw", currentHandlers.search_raw))
+    dp.add_handler(CommandHandler("calendar", currentHandlers.another_way))
     # инлайн запросы вне чата
     dp.add_handler(inline.in_query.inline_caps_handler)
 

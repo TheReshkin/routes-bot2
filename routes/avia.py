@@ -50,30 +50,24 @@ def edit_answer_query(num):
 
 def edit_answer(s_station, f_station, dep_time, dep_date, arr_time, arr_date, travel_time, min_price, link,
                 num_seats="не доступно", company="не отображено"):
-    # f_station = "Москва1"
-    # s_station = "Санкт-Петербург"
-    # t_num = "1"
-    # # departure
-    # dep_date = "01.01.2022"
-    # dep_time = "09:00"
-    # # arrival
-    # arr_date = "01.01.2022"
-    # arr_time = "14:00"
-    # travel_time = "7:00"
-    # company = "Победа"
-    # link = "aviasales.ru"
-    # num_seats = "10"
-    # min_price = "2400"
-
-    answer = f"""🛫 {1}
-    {f_station}➡️{s_station}
-    🕐 Отправление: {dep_time}  {dep_date}
-    🕗 Прибытие: {arr_time}  {arr_date}
-    ⏰ Время в пути: {travel_time}
-    {num_seats} мест от {min_price} ₽
-    Перевозчик: {company}
-    Ссылка: {link}"""
-
+    if company == "не отображено" and num_seats == "не доступно":
+        answer = f"""🛫 {1}
+        {f_station}➡{s_station}
+        🕐 Отправление:{dep_date}
+        🕗 Прибытие:{arr_date}
+        ⏰ Время в пути: {travel_time} минут
+        Места от {min_price} ₽
+        Ссылка:{link}"""
+    else:
+        # выбрать где парсить дату
+        answer = f"""🛫 {1}
+        {f_station}➡{s_station}
+        🕐 Отправление:{dep_date}
+        🕗 Прибытие:{arr_date}
+        ⏰ Время в пути:{travel_time}
+        {num_seats}мест от{min_price} ₽
+        Перевозчик:{company}
+        Ссылка:{link}"""
     return answer
 
 
@@ -92,10 +86,10 @@ def get_route(dep_code, arrival_code, dep_date, service_class, adult=1, child=0,
     response = requests.request("GET", url, headers=headers, data=payload)
     res_json = response.json()
     print(res_json)
-    # print(res_json.get('result')[0].get('arrival'))
+
     for route in res_json.get('result'):
         return edit_answer(route.get('arrival'), route.get('departure'), route.get('arrivalDateTime'),
                            route.get('arrivalDateTime'), route.get('departureDateTime'), route.get('departureDateTime'),
                            route.get('duration'),
-                           route.get('segments')[0].get('minPrice'), route.get('url'))
+                           route.get('places')[0].get('minPrice'), route.get('url'))
     return str(json.loads(response.text))
