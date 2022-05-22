@@ -3,7 +3,7 @@ import json
 import requests
 
 
-def log_in(mail, password, tel_id):
+def log_in(mail, password):
     url = "https://best-routes.herokuapp.com/user/login"
     mail = "resh@grail.com"
     password = "resh1"
@@ -19,9 +19,15 @@ def log_in(mail, password, tel_id):
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print(response.text)
+    if response.json().get('status') == 'OK':
+        u_token = response.json().get('token')
+        return u_token
+    else:
+        # возвращает если пользователь не зарегистрирован
+        return None
 
 
-def register(mail, password, tel_id):
+def register(mail, password):
     mail = "resh@grail.com"
     password = "resh1"
     url = "https://best-routes.herokuapp.com/user/register"
@@ -33,3 +39,9 @@ def register(mail, password, tel_id):
 
     print(response.text)
     print(payload)
+
+    if response.json().get('status') == 'OK':
+        u_token = response.json().get('token')
+        return u_token
+    else:
+        return None

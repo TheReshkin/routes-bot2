@@ -2,7 +2,7 @@ from telegram import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, 
 from telegram import ReplyKeyboardRemove
 from telegram.ext import ConversationHandler, CallbackQueryHandler
 from telegram.ext import CommandHandler, MessageHandler, Filters
-#from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
+# from telegram_bot_calendar import DetailedTelegramCalendar, LSTEP
 import telegram_bot_calendar
 
 import menu_buttons

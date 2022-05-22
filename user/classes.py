@@ -1,22 +1,40 @@
 from enum import Enum, auto
 from datetime import datetime, date, time
+import registration.sign
 
 
 class User:
     routes = []  # будет в базе данных
     # станции, которые искал пользователь (добавить в базу данных)
     station_history = []
+    mail = ''
+    password = ''
 
     # на буд. добавь историю станций
-    def __init__(self, chat_id, user_name):
+    def __init__(self, chat_id, mail, password):
         self.chat_id = chat_id
-        self.token = self.gen_token(chat_id)  # будет в базе данных
-        self.user_name = user_name
+        self.mail = mail
+        self.password = password
+        self.token = self.get_token()
 
     @staticmethod
-    def gen_token(chat_id):
-        # спросить как будет выдаваться токен, запрос к Rest сервису
-        return "qwerty123"
+    def get_token(self):
+        # прописать обработчик ошибки
+        try:
+            token = registration.sign.log_in(self.mail, self.password)
+            if token is not None:
+                return token
+            else:
+                token = registration.sign.register(self.mail, self.password)
+                if token is not None:
+                    return token
+                else:
+                    raise Exception("There aren't any token. Something wrong with API :(")
+        except Exception as exp:
+            print("Error", exp)
+
+
+
 
     def update_routes(self):
         # добавление изменений в маршрутах, формировать запрос
